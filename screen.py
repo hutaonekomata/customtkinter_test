@@ -20,17 +20,35 @@ class prodList(ct.CTkScrollableFrame):
             if checkbox.get() == 1:
                 checked_checkboxes.append(checkbox.cget("text"))
             return checked_checkboxes
+        
+class ToplevelWindow(ct.CTkToplevel):
+    def __init__(self, master,**kwargs):
+        super().__init__(master,**kwargs)
+        self.geometry("400x300")
 
+        self.label = ct.CTkLabel(self, text="ToplevelWindow")
+        self.label.pack(padx=20, pady=20)
+
+
+        self.master.master.master.master.setup_form()
+                
 class lendFrame(ct.CTkFrame):
     def __init__(self,master,**kwargs):
         super().__init__(master,**kwargs)
         self.num = "1"
         self.setup_form()
 
+        self.toplevel_window = None
+
     def segmented_button_callback(self,value):
         print("segmented button clicked",value)
 
     def lendAction(self,**kwargs):
+        if self.toplevel_window is None or not self.toplevel_window.winfo_exists():
+            self.toplevel_window = ToplevelWindow(self)  # create window if its None or destroyed
+        else:
+            self.toplevel_window.focus()  # if window exists focus it
+
         # ToplevelWindow
         return
 
@@ -58,6 +76,11 @@ class MainFrame(ct.CTkTabview):
 
         self.frame1 = lendFrame(master = self.tab("lend"))
         self.frame1.grid(row=0,column=0,padx=20,pady=10)
+        
+        self.num = 1
+
+    def updateFrame(self):
+        self.update()
 
 class App(ct.CTk):
     def __init__(self):
